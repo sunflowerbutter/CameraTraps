@@ -108,7 +108,7 @@ DETECTOR_METADATA = {
          'typical_detection_threshold':0.2,
          'conservative_detection_threshold':0.05}
 }
-
+#confidence threshold
 DEFAULT_RENDERING_CONFIDENCE_THRESHOLD = DETECTOR_METADATA['v5b.0.0']['typical_detection_threshold']
 DEFAULT_OUTPUT_CONFIDENCE_THRESHOLD = 0.005
 
@@ -118,12 +118,13 @@ DEFAULT_BOX_EXPANSION = 0
 
 #%% Classes
 
+#basically searches dataset for files that look like images / confirms that the model can run on them, will we need this for video? or a sort of alternate method
 class ImagePathUtils:
     """A collection of utility functions supporting this stand-alone script"""
 
     # Stick this into filenames before the extension for the rendered result
     DETECTION_FILENAME_INSERT = '_detections'
-
+    #have to change to detect video frames instead of jpg?
     image_extensions = ['.jpg', '.jpeg', '.gif', '.png']
 
     @staticmethod
@@ -159,6 +160,7 @@ class ImagePathUtils:
 
 #%% Utility functions
 
+#what are the coords used for?
 def convert_to_tf_coords(array):
     """From [x1, y1, width, height] to [y1, x1, y2, x2], where x1 is x_min, x2 is x_max
 
@@ -223,13 +225,13 @@ def get_detector_version_from_filename(detector_filename):
     else:
         return known_model_versions[matches[0]]
     
-
+#uses version + previous code to ensure the metadata works + gets confidence threshold 
 def get_typical_confidence_threshold_from_results(results):
     """
     Given the .json data loaded from a MD results file, determine a typical confidence
     threshold based on the detector version.
     """
-    if 'detector_metadata' in results['info'] and \
+    if 'detector_metadata' in results['info'] and 
         'typical_detection_threshold' in results['info']['detector_metadata']:
         default_threshold = results['info']['detector_metadata']['typical_detection_threshold']
     elif ('detector' not in results['info']) or (results['info']['detector'] is None):
@@ -293,6 +295,8 @@ def load_detector(model_file, force_cpu=False):
     print('Loaded model in {}'.format(humanfriendly.format_timespan(elapsed)))
     return detector
 
+#list of functions before main
+#image file detector, metadata detector, version check, get confidence threshold, check gpu, check pytorch + other programs
 
 #%% Main function
 
@@ -320,7 +324,7 @@ def load_and_run_detector(model_file, image_file_names, output_dir,
     # Since we'll be writing a bunch of files to the same folder, we rename
     # as necessary to avoid collisions.
     output_filename_collision_counts = {}
-
+    #how do we process frames, array of frames instead of image files?
     def input_file_to_detection_file(fn, crop_index=-1):
         """Creates unique file names for output files.
 
@@ -364,9 +368,9 @@ def load_and_run_detector(model_file, image_file_names, output_dir,
         return fn
 
     # ...def input_file_to_detection_file()
-    
+    #for each file in image file names
     for im_file in tqdm(image_file_names):
-
+        #load image
         try:
             start_time = time.time()
 
@@ -383,7 +387,7 @@ def load_and_run_detector(model_file, image_file_names, output_dir,
             }
             detection_results.append(result)
             continue
-
+        #if image loads, try to detect
         try:
             start_time = time.time()
 
@@ -442,7 +446,7 @@ def load_and_run_detector(model_file, image_file_names, output_dir,
 
 
 #%% Command-line driver
-
+#explain pls
 def main():
 
     parser = argparse.ArgumentParser(
@@ -541,7 +545,14 @@ def main():
                           image_size=args.image_size)
 
 
-if __name__ == '__main__':
+if __name__ == '__
+
+
+
+
+
+
+__':
     main()
 
 
